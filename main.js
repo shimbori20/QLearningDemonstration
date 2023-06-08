@@ -12,7 +12,7 @@ class Agent {
   }
   actionPlan(x, j) {
     let state = this.exp.filter((el) => {
-      return this.eq(el[0], x);
+      return this.equal(el[0], x);
     });
     if (state.length == 0) {
       return this.randomAction();
@@ -36,21 +36,21 @@ class Agent {
     }
     return maxMv;
   }
-  getPoint(ac1, ac2, state) {
+  getPoint(action1, action2, state) {
     let point = 0;
-    let num = 0;
+    let count = 0;
     for (let i = 0; i < state.length; i++) {
-      if (state[i][1][0] == ac1 && state[i][1][1] == ac2) {
+      if (state[i][1][0] == action1 && state[i][1][1] == action2) {
         point += state[i][2][0];
-        num++;
+        count++;
       }
     }
-    if (num == 0) {
+    if (count == 0) {
       return 0;
     }
-    return point / num;
+    return point / count;
   }
-  eq(a, b) {
+  equal(a, b) {
     if (a.length != b.length) {
       return false;
     }
@@ -135,40 +135,40 @@ class Manager {
     let point = 0;
     let newNum = null;
     for (let i = 0; i < hist.length; i++) {
-      let tmv = this.exp.filter((el) => {
-        if (!this.eq(el[0], hist[i][0])) {
+      let tmp_mv = this.exp.filter((e) => {
+        if (!this.equal(e[0], hist[i][0])) {
           return false;
         }
-        if (!this.eq(el[1], hist[i][1])) {
+        if (!this.equal(e[1], hist[i][1])) {
           return false;
         }
         return true;
       });
-      if (tmv.length == 0) {
+      if (tmp_mv.length == 0) {
         newNum = [hist[i][0], hist[i][1], [score, 1]];
-      } else if (tmv[0][2][1] >= THR) {
+      } else if (tmp_mv[0][2][1] >= THR) {
         newNum = [
           hist[i][0],
           hist[i][1],
-          [(tmv[0][2][0] * THR + score) / (THR + 1), THR + 1],
+          [(tmp_mv[0][2][0] * THR + score) / (THR + 1), THR + 1],
         ];
       } else {
         newNum = [
           hist[i][0],
           hist[i][1],
           [
-            (tmv[0][2][0] * tmv[0][2][1] + score) / (tmv[0][2][1] + 1),
-            tmv[0][2][1] + 1,
+            (tmp_mv[0][2][0] * tmp_mv[0][2][1] + score) / (tmp_mv[0][2][1] + 1),
+            tmp_mv[0][2][1] + 1,
           ],
         ];
       }
 
       let numCount = 0;
-      let delNum = this.exp.findIndex((el) => {
-        if (!this.eq(el[0], hist[i][0])) {
+      let delNum = this.exp.findIndex((e) => {
+        if (!this.equal(e[0], hist[i][0])) {
           return false;
         }
-        if (!this.eq(el[1], hist[i][1])) {
+        if (!this.equal(e[1], hist[i][1])) {
           return false;
         }
         numCount = 1;
@@ -181,7 +181,7 @@ class Manager {
     }
   }
 
-  eq(a, b) {
+  equal(a, b) {
     if (a.length != b.length) {
       return false;
     }
