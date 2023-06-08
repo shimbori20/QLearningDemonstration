@@ -70,7 +70,6 @@ class Agent {
   getEps() {
     let tmpEps = this.eps;
     this.eps = this.eps * 0.999;
-    console.log(this.eps);
     return tmpEps;
   }
   getPlanRand() {
@@ -116,7 +115,11 @@ class Manager {
   }
   draw() {
     ctx.fillStyle = "#FFF";
-    ctx.fillText(pos, 10, 10);
+    ctx.fillText(
+      "pos:" + pos.toString() + ",  eps:" + this.course.agent.eps.toString(),
+      10,
+      10
+    );
     this.course.draw();
   }
   action() {
