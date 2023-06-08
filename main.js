@@ -1,7 +1,7 @@
 "use strict";
 class Agent {
-  constructor(exp) {
-    this.eps = 0.2;
+  constructor(eps, exp) {
+    this.eps = eps;
     this.exp = exp;
   }
   action(x, j) {
@@ -67,8 +67,14 @@ class Agent {
   getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
+  getEps() {
+    let tmpEps = this.eps;
+    this.eps = this.eps * 0.999;
+    console.log(this.eps);
+    return tmpEps;
+  }
   getPlanRand() {
-    if (Math.random() < this.eps) {
+    if (Math.random() < this.getEps()) {
       return true;
     } else {
       return false;
@@ -102,7 +108,8 @@ class Obj {
 }
 class Manager {
   constructor() {
-    this.course = new Course([]);
+    this.intiEps = 0.5;
+    this.course = new Course(this.intiEps, []);
     this.exp = [];
     this.before_pos = 100;
     this.count = 0;
@@ -126,7 +133,8 @@ class Manager {
     }
   }
   reset() {
-    this.course = new Course(this.exp);
+    let before_eps = this.course.agent.eps;
+    this.course = new Course(before_eps, this.exp);
   }
   get_exp() {
     console.log("reset");
@@ -194,13 +202,13 @@ class Manager {
   }
 }
 class Course {
-  constructor(exp) {
+  constructor(eps, exp) {
     height = 0;
     pos = 100;
     this.cVec = 0;
     this.cWidth = 25;
     this.cHeight = 50;
-    this.age = new Agent(exp);
+    this.agent = new Agent(eps, exp);
     this.enm = [];
     this.hole = [];
     this.count = 0;
@@ -237,7 +245,7 @@ class Course {
     if (height != 0) {
       state[8] = 1;
     }
-    let x = this.age.action(state, height == 0);
+    let x = this.agent.action(state, height == 0);
 
     if (x == null) {
       console.log(state);
